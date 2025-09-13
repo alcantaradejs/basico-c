@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 const int DEV_MODE = 0;
-const int BOARD_SIZE_X = 5 * 10;
-const int BOARD_SIZE_Y = 3 * 10; 
+const int BOARD_SIZE_X = 5 * 6;
+const int BOARD_SIZE_Y = 3 * 6; 
 const char SIMBOLO_FUNDO = '.';
 
 void createBoard(int board[BOARD_SIZE_Y][BOARD_SIZE_X]) {
@@ -44,11 +44,41 @@ void drawTriangle(int board[BOARD_SIZE_Y][BOARD_SIZE_X], int initYpos, int initX
     }
 }
 
+void drawOctaedro(int board[BOARD_SIZE_Y][BOARD_SIZE_X], int initYpos, int initXpos, int size, char Simbol) {
+    const int limitY = (3 * size) + initYpos, limitX = (3 * size) + initXpos;
+
+    int initLine = (((size * 3) / 2) + initXpos) - 1;
+    int endLine = ((size * 3) / 2) + initXpos + 1;
+
+    for (int y = initYpos; y < limitY && y < BOARD_SIZE_Y ; y++) {
+        if (DEV_MODE) printf ("\n[DEV MODE]\n y: %d  initLine: %d  lineSize: %d\n", y, initLine, endLine);
+
+        for (int x = initXpos; x < limitX && x < BOARD_SIZE_X ; x++) {
+            if (x > initLine && x < endLine) {
+                board[y][x] = Simbol;
+            }
+            if (DEV_MODE) printf("%c ", board[y][x]);
+        }
+        if (DEV_MODE) printf("\n"); 
+
+        // initLine--;
+        // endLine++; 
+        if (y < ((size * 3) / 2) + initYpos) { 
+            initLine--;
+            endLine++;  
+        } else { 
+            initLine++;
+            endLine--;  
+        }
+    }
+}
+
 int main() {
     int board[BOARD_SIZE_Y][BOARD_SIZE_X];
     createBoard(board);
 
-    drawTriangle(board, 1, 1, 3, '#');
+    drawTriangle(board, ((BOARD_SIZE_Y / 2) - ((3 * 5)/2)) - 1, (BOARD_SIZE_X / 2) - ((5 * 5)/2), 5, '!');
+    drawOctaedro(board, (BOARD_SIZE_Y / 2) - ((3 * 5)/2), (BOARD_SIZE_X / 2) - ((3 * 5)/2), 5, '@');
 
     showBoard(board, " ");
     return 0;
